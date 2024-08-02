@@ -13,36 +13,38 @@ class SignupPage extends StatelessWidget {
         backgroundColor: const Color.fromARGB(255, 45, 45, 45),
         body: Center(
             child: isSmallScreen
-                ? Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        "FinGoal",
-                        style: GoogleFonts.poppins(
-                          color: Colors.white,
-                          fontSize: 60,
+                ? SingleChildScrollView(
+                  child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          "FinGoal",
+                          style: GoogleFonts.poppins(
+                            color: Colors.white,
+                            fontSize: 60,
+                          ),
                         ),
-                      ),
-                      const SizedBox(
-                        height: 100,
-                      ),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 55.0),
-                          child: Text(
-                            "Create Your Account",
-                            style: GoogleFonts.poppins(
-                              color: Colors.white,
-                              fontSize: 16,
+                        const SizedBox(
+                          height: 100,
+                        ),
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 55.0),
+                            child: Text(
+                              "Create Your Account",
+                              style: GoogleFonts.poppins(
+                                color: Colors.white,
+                                fontSize: 16,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      const SizedBox(height: 20),
-                      const _FormContent(),
-                    ],
-                  )
+                        const SizedBox(height: 20),
+                        const _FormContent(),
+                      ],
+                    ),
+                )
                 : Container(
                     padding: const EdgeInsets.all(32.0),
                     constraints: const BoxConstraints(maxWidth: 800),
