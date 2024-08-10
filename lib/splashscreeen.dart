@@ -33,7 +33,8 @@ class _SplashScreenState extends State<SplashScreen> {
       body: Stack(
         children: [
           Center(
-            child: Lottie.asset('assets/splashscreen/splashscreen.json'),
+            child: Lottie.asset('assets/splashscreen/splashscreen.json',
+            frameRate: const FrameRate(60)),
           ),
         ],
       ),

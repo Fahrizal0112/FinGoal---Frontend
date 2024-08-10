@@ -198,7 +198,7 @@ class __FormContentState extends State<_FormContent> {
                     style: GoogleFonts.poppins(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
-                        color: Color.fromARGB(255, 255, 255, 255)),
+                        color: const Color.fromARGB(255, 255, 255, 255)),
                   ),
                 ),
                 onPressed: () {
