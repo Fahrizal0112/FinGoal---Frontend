@@ -104,7 +104,7 @@ class _QuestionState extends State<Question> {
                       padding: const EdgeInsets.symmetric(vertical: 15),
                     ),
                     onPressed: () {
-                      print('Selected answer: $answer');
+                      debugPrint('Selected answer: $answer');
                     },
                     child: Text(
                       answer,

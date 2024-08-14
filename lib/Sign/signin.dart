@@ -1,4 +1,5 @@
 import 'package:fingoal_frontend/Sign/signup.dart';
+import 'package:fingoal_frontend/menu.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -202,7 +203,9 @@ class __FormContentState extends State<_FormContent> {
                   ),
                 ),
                 onPressed: () {
-                  if (_formKey.currentState?.validate() ?? false) {}
+                  if (_formKey.currentState?.validate() ?? false) {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => const Menu()));
+                  }
                 },
               ),
             ),
