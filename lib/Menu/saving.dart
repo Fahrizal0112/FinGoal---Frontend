@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class Saving extends StatefulWidget {
@@ -164,6 +165,7 @@ class _SavingState extends State<Saving> {
                 ),
                 keyboardType: TextInputType.number,
                 style: GoogleFonts.poppins(color: Colors.white),
+                inputFormatters: [CurrencyInputFormatter()],
               ),
             ],
             const SizedBox(height: 30),
@@ -334,12 +336,14 @@ class _SavingState extends State<Saving> {
                 ),
                 keyboardType: TextInputType.number,
                 style: GoogleFonts.poppins(color: Colors.white),
+                inputFormatters: [
+                  CurrencyInputFormatter(), // Add the custom formatter here
+                ],
               ),
             ],
-            const SizedBox(
-              height: 30,
-            ),
-            TextButton(
+            const SizedBox(height: 30),
+            Center(
+              child: TextButton(
                 onPressed: () {},
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
@@ -348,15 +352,44 @@ class _SavingState extends State<Saving> {
                       "Lihat Rekomendasi",
                       style: GoogleFonts.poppins(color: Colors.white),
                     ),
+                    const SizedBox(width: 10),
                     const Icon(
                       Icons.arrow_forward_ios,
                       color: Colors.green,
-                    )
+                    ),
                   ],
-                ))
+                ),
+              ),
+            ),
+            const SizedBox(height: 30),
           ],
         ),
       ),
+    );
+  }
+}
+
+class CurrencyInputFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    final text = newValue.text;
+    final isEditing = oldValue.text != text;
+    if (text.isEmpty) return newValue;
+
+    final buffer = StringBuffer();
+    final digits = text.replaceAll(RegExp(r'\D'), '');
+
+    for (int i = 0; i < digits.length; i++) {
+      if (i > 0 && (digits.length - i) % 3 == 0) buffer.write('.');
+      buffer.write(digits[i]);
+    }
+
+    return newValue.copyWith(
+      text: 'Rp. ${buffer.toString()}',
+      selection: TextSelection.collapsed(offset: buffer.length + 4),
     );
   }
 }
