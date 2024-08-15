@@ -376,7 +376,7 @@ class CurrencyInputFormatter extends TextInputFormatter {
     TextEditingValue newValue,
   ) {
     final text = newValue.text;
-    final isEditing = oldValue.text != text;
+    oldValue.text != text;
     if (text.isEmpty) return newValue;
 
     final buffer = StringBuffer();

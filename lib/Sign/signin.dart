@@ -12,50 +12,52 @@ class SignInPage extends StatelessWidget {
     final bool isSmallScreen = MediaQuery.of(context).size.width < 600;
 
     return Scaffold(
-        backgroundColor: const Color.fromARGB(255, 45, 45, 45),
-        body: Center(
-            child: isSmallScreen
-                ? Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        "FinGoal",
+      backgroundColor: const Color.fromARGB(255, 45, 45, 45),
+      body: Center(
+        child: isSmallScreen
+            ? Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    "FinGoal",
+                    style: GoogleFonts.poppins(
+                      color: Colors.white,
+                      fontSize: 60,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 100,
+                  ),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 55.0),
+                      child: Text(
+                        "Login To Your Account",
                         style: GoogleFonts.poppins(
                           color: Colors.white,
-                          fontSize: 60,
+                          fontSize: 16,
                         ),
                       ),
-                      const SizedBox(
-                        height: 100,
-                      ),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 55.0),
-                          child: Text(
-                            "Login To Your Account",
-                            style: GoogleFonts.poppins(
-                              color: Colors.white,
-                              fontSize: 16,
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      const _FormContent(),
-                    ],
-                  )
-                : Container(
-                    padding: const EdgeInsets.all(32.0),
-                    constraints: const BoxConstraints(maxWidth: 800),
-                    child: const Row(
-                      children: [
-                        Expanded(
-                          child: Center(child: _FormContent()),
-                        ),
-                      ],
                     ),
-                  )));
+                  ),
+                  const SizedBox(height: 20),
+                  const _FormContent(),
+                ],
+              )
+            : Container(
+                padding: const EdgeInsets.all(32.0),
+                constraints: const BoxConstraints(maxWidth: 800),
+                child: const Row(
+                  children: [
+                    Expanded(
+                      child: Center(child: _FormContent()),
+                    ),
+                  ],
+                ),
+              ),
+      ),
+    );
   }
 }
 
@@ -194,7 +196,7 @@ class __FormContentState extends State<_FormContent> {
                     debugPrint('Signin Clicked');
                     if (_formKey.currentState?.validate() ?? true) {
                       try {
-                        final response = await _apiService.signin(
+                        await _apiService.signin(
                             _usernameController.text, _passwordController.text);
                         Navigator.push(
                             context,

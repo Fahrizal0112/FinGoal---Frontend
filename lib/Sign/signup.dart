@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:fingoal_frontend/Service/api_service.dart';
 import 'package:fingoal_frontend/Sign/signin.dart';
 import 'package:flutter/material.dart';
@@ -352,7 +354,7 @@ class __FormContentState extends State<_FormContent> {
                     debugPrint('SignUp Clicked');
                     if (_formKey.currentState?.validate() == true) {
                       try {
-                        final response = await _apiService.signup(
+                        await _apiService.signup(
                           _firstnameController.text,
                           _lastnameController.text,
                           _usernameController.text,
