@@ -1,5 +1,6 @@
 import 'package:fingoal_frontend/Menu/saving.dart';
 import 'package:fingoal_frontend/Service/api_service.dart';
+import 'package:fingoal_frontend/Sign/signin.dart';
 import 'package:fingoal_frontend/question/question.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -98,10 +99,31 @@ class _MenuState extends State<Menu> {
                       ),
                     ],
                   ),
-                  const Icon(
-                    Icons.settings,
-                    color: Colors.white,
-                    size: 24.0,
+                  PopupMenuButton<int>(
+                    icon: const Icon(
+                      Icons.settings,
+                      color: Colors.white,
+                      size: 24.0,
+                    ),
+                    onSelected: (value) {
+                      if (value == 0) {
+                        // Aksi untuk logout
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) => const SignInPage(),));
+                      }
+                    },
+                    itemBuilder: (context) => [
+                      const PopupMenuItem<int>(
+                        value: 0,
+                        child: Row(
+                          children: [
+                            Icon(Icons.logout, color: Colors.black),
+                            SizedBox(width: 8),
+                            Text("Logout"),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -119,7 +141,7 @@ class _MenuState extends State<Menu> {
                   child: Column(
                     children: [
                       Text(
-                        "Profil Risk : $risk",
+                        risk != null ? "Profil Risk : $risk" : "Yu cek Profile risk dulu",
                         style: GoogleFonts.poppins(
                             fontSize: 10,
                             color: Colors.white,

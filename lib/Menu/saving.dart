@@ -1,3 +1,5 @@
+import 'package:fingoal_frontend/Service/api_service.dart';
+import 'package:fingoal_frontend/menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -12,9 +14,11 @@ class Saving extends StatefulWidget {
 }
 
 class _SavingState extends State<Saving> {
-  final TextEditingController _firstController = TextEditingController();
-  final TextEditingController _secondController = TextEditingController();
-  final TextEditingController _thirdController = TextEditingController();
+  final TextEditingController _tujuanmenabung = TextEditingController();
+  final TextEditingController _targetmenabung = TextEditingController();
+  final TextEditingController _durasimenabung = TextEditingController();
+  final TextEditingController _jumlahsetoran = TextEditingController();
+  final ApiService _apiService = ApiService();
 
   bool _isFirstFieldFilled = false;
   bool _isSecondFieldFilled = false;
@@ -26,43 +30,44 @@ class _SavingState extends State<Saving> {
   @override
   void initState() {
     super.initState();
-    _firstController.addListener(() {
+    _tujuanmenabung.addListener(() {
       setState(() {
-        _isFirstFieldFilled = _firstController.text.isNotEmpty;
+        _isFirstFieldFilled = _tujuanmenabung.text.isNotEmpty;
       });
     });
 
-    _secondController.addListener(() {
+    _targetmenabung.addListener(() {
       setState(() {
-        _isSecondFieldFilled = _secondController.text.isNotEmpty;
+        _isSecondFieldFilled = _targetmenabung.text.isNotEmpty;
       });
     });
 
-    _thirdController.addListener(() {
+    _durasimenabung.addListener(() {
       setState(() {
-        _isThirdFieldFilled = _thirdController.text.isNotEmpty;
+        _isThirdFieldFilled = _durasimenabung.text.isNotEmpty;
       });
     });
   }
 
   @override
   void dispose() {
-    _firstController.dispose();
-    _secondController.dispose();
-    _thirdController.dispose();
+    _tujuanmenabung.dispose();
+    _targetmenabung.dispose();
+    _durasimenabung.dispose();
+    _jumlahsetoran.dispose();
     super.dispose();
   }
 
   String getFrequencyText() {
     switch (_selectedFrequency) {
       case 0:
-        return "Hari";
+        return "Harian";
       case 1:
-        return "Bulan";
+        return "Bulanan";
       case 2:
-        return "Tahun";
+        return "Tahunan";
       default:
-        return "Hari";
+        return "Harian";
     }
   }
 
@@ -124,7 +129,7 @@ class _SavingState extends State<Saving> {
             ),
             const SizedBox(height: 10),
             TextFormField(
-              controller: _firstController,
+              controller: _tujuanmenabung,
               decoration: InputDecoration(
                 hintText: 'Tujuan Anda',
                 hintStyle: GoogleFonts.poppins(color: Colors.white54),
@@ -158,9 +163,10 @@ class _SavingState extends State<Saving> {
               ),
               const SizedBox(height: 10),
               TextFormField(
-                controller: _secondController,
+                controller: _targetmenabung,
                 decoration: InputDecoration(
-                  hintText: 'Ammount',
+                  prefixText: "Rp.",
+                  hintText: 'Amount',
                   hintStyle: GoogleFonts.poppins(color: Colors.white54),
                 ),
                 keyboardType: TextInputType.number,
@@ -198,9 +204,9 @@ class _SavingState extends State<Saving> {
                 children: [
                   Expanded(
                     child: TextFormField(
-                      controller: _thirdController,
+                      controller: _durasimenabung,
                       decoration: InputDecoration(
-                        hintText: 'Ammount',
+                        hintText: 'Amount',
                         hintStyle: GoogleFonts.poppins(color: Colors.white54),
                       ),
                       keyboardType: TextInputType.number,
@@ -330,38 +336,98 @@ class _SavingState extends State<Saving> {
               ),
               const SizedBox(height: 10),
               TextFormField(
+                controller: _jumlahsetoran,
                 decoration: InputDecoration(
                   hintText: 'Jumlah Setoran',
+                  prefixText: "Rp.",
                   hintStyle: GoogleFonts.poppins(color: Colors.white54),
                 ),
                 keyboardType: TextInputType.number,
                 style: GoogleFonts.poppins(color: Colors.white),
-                inputFormatters: [
-                  CurrencyInputFormatter(), // Add the custom formatter here
-                ],
+                inputFormatters: [CurrencyInputFormatter()],
               ),
             ],
-            const SizedBox(height: 30),
+            const SizedBox(height: 40),
             Center(
-              child: TextButton(
-                onPressed: () {},
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Text(
-                      "Lihat Rekomendasi",
-                      style: GoogleFonts.poppins(color: Colors.white),
-                    ),
-                    const SizedBox(width: 10),
-                    const Icon(
-                      Icons.arrow_forward_ios,
-                      color: Colors.green,
-                    ),
-                  ],
+              child: ElevatedButton(
+                onPressed: () async {
+                  final goal = _tujuanmenabung.text;
+                  final moneygoal =
+                      int.parse(_targetmenabung.text.replaceAll('.', ''));
+                  final duration = int.parse(_durasimenabung.text);
+                  final frequency = getFrequencyText();
+                  final monthly =
+                      int.parse(_jumlahsetoran.text.replaceAll('.', ''));
+
+                  try {
+                    final response = await _apiService.createSavings(
+                        goal, moneygoal, duration, frequency, monthly);
+
+                    final recommendation = response['recommendation'];
+
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          backgroundColor:
+                              const Color.fromARGB(255, 45, 45, 45),
+                          title: Text(
+                            'Hasil',
+                            style: GoogleFonts.poppins(color: Colors.white),
+                          ),
+                          content: Text(
+                            recommendation,
+                            style: GoogleFonts.poppins(color: Colors.white),
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => const Menu()));
+                              },
+                              child: Row(
+                                children: [
+                                  Text(
+                                    'Cek Rekomendasi Saham',
+                                    style: GoogleFonts.poppins(color: Colors.green),
+                                  ),const Icon(Icons.arrow_forward_ios, color: Colors.green,)
+                                ],
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  } catch (e) {
+                    // Handle error
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Failed to create savings: $e')),
+                    );
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 50,
+                    vertical: 20,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  backgroundColor: Colors.green,
+                ),
+                child: Text(
+                  "Cek Rekomendasi",
+                  style: GoogleFonts.poppins(
+                    color: Colors.white,
+                    fontSize: 18,
+                  ),
                 ),
               ),
             ),
-            const SizedBox(height: 30),
+            const SizedBox(height: 40),
           ],
         ),
       ),
@@ -372,24 +438,15 @@ class _SavingState extends State<Saving> {
 class CurrencyInputFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(
-    TextEditingValue oldValue,
-    TextEditingValue newValue,
-  ) {
-    final text = newValue.text;
-    oldValue.text != text;
-    if (text.isEmpty) return newValue;
-
-    final buffer = StringBuffer();
-    final digits = text.replaceAll(RegExp(r'\D'), '');
-
-    for (int i = 0; i < digits.length; i++) {
-      if (i > 0 && (digits.length - i) % 3 == 0) buffer.write('.');
-      buffer.write(digits[i]);
-    }
+      TextEditingValue oldValue, TextEditingValue newValue) {
+    final intValue = int.tryParse(newValue.text.replaceAll('.', '')) ?? 0;
+    final newText = intValue
+        .toString()
+        .replaceAllMapped(RegExp(r'\B(?=(\d{3})+(?!\d))'), (match) => '.');
 
     return newValue.copyWith(
-      text: 'Rp. ${buffer.toString()}',
-      selection: TextSelection.collapsed(offset: buffer.length + 4),
+      text: newText,
+      selection: TextSelection.collapsed(offset: newText.length),
     );
   }
 }

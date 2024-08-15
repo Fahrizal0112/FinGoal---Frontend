@@ -355,8 +355,8 @@ class __FormContentState extends State<_FormContent> {
                     if (_formKey.currentState?.validate() == true) {
                       try {
                         await _apiService.signup(
-                          _firstnameController.text,
                           _lastnameController.text,
+                          _firstnameController.text,
                           _usernameController.text,
                           _emailController.text,
                           _passwordController.text,
@@ -367,7 +367,6 @@ class __FormContentState extends State<_FormContent> {
                               builder: (context) => const SignInPage()),
                         );
                       } catch (e) {
-                        // Handle errors (e.g., show an error message)
                         debugPrint('Signup failed: $e');
                       }
                     }
