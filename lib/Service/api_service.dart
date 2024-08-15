@@ -1,10 +1,11 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class ApiService {
-  final String baseUrl = 'http://localhost:8080/fingoal';
+  final String baseUrl = 'http://192.168.18.29:8080/fingoal';
 
-  Future<Map<String, dynamic>> signup(String username, String password) async {
+  Future<Map<String, dynamic>> signup(String lastname,String firstname,String username,String email, String password) async {
     final response = await http.post(
       Uri.parse('$baseUrl/signup'),
       headers: <String, String>{
@@ -12,11 +13,14 @@ class ApiService {
       },
       body: jsonEncode(<String, String>{
         'username': username,
+        'email': email,
         'password': password,
+        'firstname': firstname,
+        'lastname': lastname,
       }),
     );
 
-    if (response.statusCode == 200) {
+    if (response.statusCode == 201) {
       return jsonDecode(response.body);
     } else {
       throw Exception('Failed to sign up');
@@ -109,22 +113,28 @@ class ApiService {
     }
   }
 
-  Future<Map<String, dynamic>> submitAnswers(String token, List<Map<String, dynamic>> answers) async {
-    final response = await http.post(
-      Uri.parse('$baseUrl/submit'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-        'Authorization': 'Bearer $token',
-      },
-      body: jsonEncode({'answers': answers}),
-    );
+Future<Map<String, dynamic>> submitAnswers(List<Map<String, dynamic>> answers) async {
+  const storage = FlutterSecureStorage();
+  final token = await storage.read(key: 'authorization');
 
-    if (response.statusCode == 200) {
-      return jsonDecode(response.body);
-    } else {
-      throw Exception('Failed to submit answers');
-    }
+  if (token == null) {
+    throw Exception('Token not found');
   }
+
+  final response = await http.post(
+    Uri.parse('$baseUrl/submit'),
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    },
+    body: jsonEncode({'answers': answers}),
+  );
+
+  if (response.statusCode == 200) {
+    return jsonDecode(response.body);
+  } else {
+    throw Exception('Failed to submit answers');
+  }
+}
 
   Future<Map<String, dynamic>> createSavings(String token, Map<String, dynamic> savingsData) async {
     final response = await http.post(
