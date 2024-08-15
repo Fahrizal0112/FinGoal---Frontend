@@ -1,3 +1,4 @@
+import 'package:fingoal_frontend/Service/api_service.dart';
 import 'package:fingoal_frontend/Sign/signup.dart';
 import 'package:fingoal_frontend/menu.dart';
 import 'package:flutter/material.dart';
@@ -59,7 +60,7 @@ class SignInPage extends StatelessWidget {
 }
 
 class _FormContent extends StatefulWidget {
-  const _FormContent({super.key});
+  const _FormContent();
 
   @override
   State<_FormContent> createState() => __FormContentState();
@@ -67,170 +68,167 @@ class _FormContent extends StatefulWidget {
 
 class __FormContentState extends State<_FormContent> {
   bool _isPasswordVisible = false;
-
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final ApiService _apiService = ApiService();
+
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      constraints: const BoxConstraints(maxWidth: 300),
-      child: Form(
-        key: _formKey,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TextFormField(
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter some text';
-                }
-                return null;
-              },
-              decoration: InputDecoration(
-                iconColor: Colors.white,
-                labelText: 'Username',
-                hintText: 'Enter your Username',
-                prefixIcon:
-                    const Icon(Icons.email_outlined, color: Colors.white),
-                border: const OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white),
+    return SingleChildScrollView(
+      child: Container(
+        constraints: const BoxConstraints(maxWidth: 300),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TextFormField(
+                controller: _usernameController,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter some text';
+                  }
+                  return null;
+                },
+                decoration: InputDecoration(
+                  iconColor: Colors.white,
+                  labelText: 'Username',
+                  hintText: 'Enter your Username',
+                  prefixIcon:
+                      const Icon(Icons.email_outlined, color: Colors.white),
+                  border: const OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white),
+                  ),
+                  focusedBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white),
+                  ),
+                  enabledBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white),
+                  ),
+                  errorBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white),
+                  ),
+                  focusedErrorBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white),
+                  ),
+                  labelStyle: GoogleFonts.poppins(color: Colors.white),
+                  hintStyle: GoogleFonts.poppins(color: Colors.white),
                 ),
-                focusedBorder: const OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white),
-                ),
-                enabledBorder: const OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white),
-                ),
-                errorBorder: const OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white),
-                ),
-                focusedErrorBorder: const OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white),
-                ),
-                labelStyle: GoogleFonts.poppins(color: Colors.white),
-                hintStyle: GoogleFonts.poppins(color: Colors.white),
+                style: GoogleFonts.poppins(color: Colors.white),
+                cursorColor: Colors.white,
               ),
-              style: GoogleFonts.poppins(color: Colors.white),
-              cursorColor: Colors.white,
-            ),
-            _gap(),
-            TextFormField(
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter some text';
-                }
+              _gap(),
+              TextFormField(
+                controller: _passwordController,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter some text';
+                  }
 
-                if (value.length < 6) {
-                  return 'Password must be at least 6 characters';
-                }
-                return null;
-              },
-              obscureText: !_isPasswordVisible,
-              decoration: InputDecoration(
-                labelText: 'Password',
-                hintText: 'Enter your password',
-                prefixIcon:
-                    const Icon(Icons.lock_outline_rounded, color: Colors.white),
-                border: const OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white),
-                ),
-                focusedBorder: const OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white),
-                ),
-                enabledBorder: const OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white),
-                ),
-                errorBorder: const OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white),
-                ),
-                focusedErrorBorder: const OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white),
-                ),
-                suffixIcon: IconButton(
-                  icon: Icon(
-                      _isPasswordVisible
-                          ? Icons.visibility_off
-                          : Icons.visibility,
+                  if (value.length < 6) {
+                    return 'Password must be at least 6 characters';
+                  }
+                  return null;
+                },
+                obscureText: !_isPasswordVisible,
+                decoration: InputDecoration(
+                  labelText: 'Password',
+                  hintText: 'Enter your password',
+                  prefixIcon: const Icon(Icons.lock_outline_rounded,
                       color: Colors.white),
-                  onPressed: () {
-                    setState(() {
-                      _isPasswordVisible = !_isPasswordVisible;
-                    });
+                  border: const OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white),
+                  ),
+                  focusedBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white),
+                  ),
+                  enabledBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white),
+                  ),
+                  errorBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white),
+                  ),
+                  focusedErrorBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white),
+                  ),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                        _isPasswordVisible
+                            ? Icons.visibility_off
+                            : Icons.visibility,
+                        color: Colors.white),
+                    onPressed: () {
+                      setState(() {
+                        _isPasswordVisible = !_isPasswordVisible;
+                      });
+                    },
+                  ),
+                  labelStyle: GoogleFonts.poppins(color: Colors.white),
+                  hintStyle: GoogleFonts.poppins(color: Colors.white),
+                ),
+                style: const TextStyle(color: Colors.white),
+                cursorColor: Colors.white,
+              ),
+              _gap(),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(4)),
+                      backgroundColor: const Color.fromARGB(255, 46, 139, 87)),
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Text(
+                      'Sign in',
+                      style: GoogleFonts.poppins(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: const Color.fromARGB(255, 255, 255, 255)),
+                    ),
+                  ),
+                  onPressed: () async {
+                    debugPrint('Signin Clicked');
+                    if (_formKey.currentState?.validate() ?? true) {
+                      try {
+                        final response = await _apiService.signin(
+                            _usernameController.text, _passwordController.text);
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const Menu()));
+                      } catch (e) {
+                        debugPrint("Singin Failed");
+                      }
+                    }
                   },
                 ),
-                labelStyle: GoogleFonts.poppins(color: Colors.white),
-                hintStyle: GoogleFonts.poppins(color: Colors.white),
               ),
-              style: const TextStyle(color: Colors.white),
-              cursorColor: Colors.white,
-            ),
-            _gap(),
-            // CheckboxListTile(
-            //   checkColor: Colors.white,
-            //   activeColor: Colors.white,
-            //   value: _rememberMe,
-            //   onChanged: (value) {
-            //     if (value == null) return;
-            //     setState(() {
-            //       _rememberMe = value;
-            //     });
-            //   },
-            //   title: const Text(
-            //     'Remember me',
-            //     style: TextStyle(color: Colors.white),
-            //   ),
-            //   controlAffinity: ListTileControlAffinity.leading,
-            //   dense: true,
-            //   contentPadding: const EdgeInsets.all(0),
-            // ),
-            _gap(),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(4)),
-                    backgroundColor: const Color.fromARGB(255, 46, 139, 87)),
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Text(
-                    'Sign in',
-                    style: GoogleFonts.poppins(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: const Color.fromARGB(255, 255, 255, 255)),
+              TextButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const SignupPage()),
+                  );
+                },
+                child: Text.rich(
+                  TextSpan(
+                    text: "Dont Have An Account? ",
+                    style: GoogleFonts.poppins(color: Colors.white),
+                    children: [
+                      TextSpan(
+                          text: "SignUp",
+                          style: GoogleFonts.poppins(
+                              color: const Color.fromARGB(255, 46, 139, 87)))
+                    ],
                   ),
                 ),
-                onPressed: () {
-                  if (_formKey.currentState?.validate() ?? false) {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => const Menu()));
-                  }
-                },
               ),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const SignupPage()),
-              );
-              },
-              child: Text.rich(
-                TextSpan(
-                  text: "Dont Have An Account? ",
-                  style: GoogleFonts.poppins(color: Colors.white),
-                  children: [
-                    TextSpan(
-                      text: "SignUp",
-                      style: GoogleFonts.poppins(color: const Color.fromARGB(255, 46, 139, 87))
-                    )
-                  ],
-                ),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

@@ -349,7 +349,7 @@ class __FormContentState extends State<_FormContent> {
                     padding: const EdgeInsets.all(15),
                   ),
                   onPressed: () async {
-                    debugPrint('test');
+                    debugPrint('SignUp Clicked');
                     if (_formKey.currentState?.validate() == true) {
                       try {
                         final response = await _apiService.signup(

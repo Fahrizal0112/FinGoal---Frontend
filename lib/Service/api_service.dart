@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -40,6 +41,12 @@ class ApiService {
     );
 
     if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      final token = data['token'];
+
+      const storage = FlutterSecureStorage();
+      await storage.write(key: 'authorization', value: token);
+      debugPrint('Token saved: $token');
       return jsonDecode(response.body);
     } else {
       throw Exception('Failed to sign in');
@@ -58,6 +65,51 @@ class ApiService {
       return jsonDecode(response.body);
     } else {
       throw Exception('Failed to load questions');
+    }
+  }
+
+  Future<Map<String, dynamic>> getLastname() async {
+    const storage = FlutterSecureStorage();
+    final token = await storage.read(key: 'authorization');
+    debugPrint('Token: $token');
+    if (token == null) {
+      throw Exception('Token not found');
+    }
+
+    final uri = Uri.parse('$baseUrl/lastname');
+    final response = await http.get(
+      uri,
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Cookie': 'authorization=$token', 
+      },
+    );
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to load lastname');
+    }
+  }
+
+  Future<Map<String, dynamic>> getRisk() async {
+    const storage = FlutterSecureStorage();
+    final token = await storage.read(key: 'authorization');
+    if (token == null) {
+      throw Exception('Token Not Found');
+    }
+    final uri = Uri.parse('$baseUrl/risk');
+    final response = await http.get(
+      uri,
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Cookie': 'authorization=$token', 
+      }
+    );
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to load risk');
     }
   }
 

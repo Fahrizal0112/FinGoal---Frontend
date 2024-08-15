@@ -1,4 +1,5 @@
 import 'package:fingoal_frontend/Menu/saving.dart';
+import 'package:fingoal_frontend/Service/api_service.dart';
 import 'package:fingoal_frontend/question/question.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -13,6 +14,59 @@ class Menu extends StatefulWidget {
 }
 
 class _MenuState extends State<Menu> {
+  String? lastname;
+  String? risk;
+  String greeting = '';
+  final ApiService _apiService = ApiService();
+
+  @override
+  void initState() {
+    super.initState();
+    fetchLastname();
+    fetchRisk();
+    setGreeting();
+  }
+
+  void fetchLastname() async {
+    try {
+      final data = await _apiService.getLastname();
+      final fetchedLastname = data['lastname'];
+      debugPrint('Lastname: $fetchedLastname');
+
+      setState(() {
+        lastname = fetchedLastname;
+      });
+    } catch (e) {
+      debugPrint('Error fetching lastname: $e');
+    }
+  }
+
+  void fetchRisk() async {
+    try {
+      final data = await _apiService.getRisk();
+      final fetchedRisk = data['accountType'];
+      debugPrint('Risk: $fetchedRisk');
+
+      setState(() {
+        risk = fetchedRisk;
+      });
+    } catch (e) {
+      debugPrint('Error fetching risk: $e');
+    }
+  }
+
+  void setGreeting() {
+    final hour = DateTime.now().hour;
+
+    if (hour < 12) {
+      greeting = "Good Morning";
+    } else if (hour < 17) {
+      greeting = "Good Afternoon";
+    } else {
+      greeting = "Good Evening";
+    }
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,14 +85,14 @@ class _MenuState extends State<Menu> {
                         height: 30,
                       ),
                       Text(
-                        "Hi, Fahrizal",
+                        "Hi, $lastname",
                         style: GoogleFonts.poppins(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
                             color: Colors.white),
                       ),
                       Text(
-                        "Good Morning",
+                        greeting,
                         style: GoogleFonts.poppins(
                             fontSize: 14, color: Colors.white),
                       ),
@@ -65,7 +119,7 @@ class _MenuState extends State<Menu> {
                   child: Column(
                     children: [
                       Text(
-                        "Profil Risk : Agresif",
+                        "Profil Risk : $risk",
                         style: GoogleFonts.poppins(
                             fontSize: 12,
                             color: Colors.white,
@@ -91,7 +145,6 @@ class _MenuState extends State<Menu> {
                         MaterialPageRoute(
                             builder: (context) => const Question()),
                       );
-                      const Question();
                     },
                   ),
                   MenuItem(
@@ -120,7 +173,7 @@ class _MenuState extends State<Menu> {
 
 class MenuItem extends StatelessWidget {
   final String title;
-  final String image; // Changed from IconData to String
+  final String image;
   final VoidCallback onTap;
 
   const MenuItem({
