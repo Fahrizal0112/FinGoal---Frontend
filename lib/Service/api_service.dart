@@ -53,7 +53,7 @@ class ApiService {
     }
   }
 
-  Future<List<dynamic>> getQuestions() async {
+  Future<List<Map<String, dynamic>>> getQuestions() async {
     final response = await http.get(
       Uri.parse('$baseUrl/question'),
       headers: <String, String>{
@@ -62,11 +62,12 @@ class ApiService {
     );
 
     if (response.statusCode == 200) {
-      return jsonDecode(response.body);
+      return List<Map<String, dynamic>>.from(jsonDecode(response.body));
     } else {
       throw Exception('Failed to load questions');
     }
   }
+
 
   Future<Map<String, dynamic>> getLastname() async {
     const storage = FlutterSecureStorage();
@@ -113,38 +114,21 @@ class ApiService {
     }
   }
 
-  Future<Map<String, dynamic>> createQuestion(String question) async {
-    final response = await http.post(
-      Uri.parse('$baseUrl/question'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, String>{
-        'question': question,
-      }),
-    );
-
-    if (response.statusCode == 200) {
-      return jsonDecode(response.body);
-    } else {
-      throw Exception('Failed to create question');
-    }
-  }
-
-  Future<List<dynamic>> getAnswersByQuestionId(String questionId) async {
+  Future<List<Map<String, dynamic>>> getAnswersByQuestionId(String questionId) async {
     final response = await http.get(
-      Uri.parse('$baseUrl/answer?questionId=$questionId'),
+      Uri.parse('$baseUrl/answer/$questionId'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
     );
 
     if (response.statusCode == 200) {
-      return jsonDecode(response.body);
+      return List<Map<String, dynamic>>.from(jsonDecode(response.body));
     } else {
       throw Exception('Failed to load answers');
     }
   }
+
 
   Future<Map<String, dynamic>> createAnswer(String questionId, String answer) async {
     final response = await http.post(
@@ -193,7 +177,7 @@ Future<Map<String, dynamic>> submitAnswers(List<Map<String, dynamic>> answers) a
       Uri.parse('$baseUrl/saving'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
-        'Authorization': 'Bearer $token',
+        'Cookie': 'authorization=$token', 
       },
       body: jsonEncode(savingsData),
     );
