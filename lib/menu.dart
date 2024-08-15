@@ -66,7 +66,7 @@ class _MenuState extends State<Menu> {
       greeting = "Good Evening";
     }
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -121,7 +121,7 @@ class _MenuState extends State<Menu> {
                       Text(
                         "Profil Risk : $risk",
                         style: GoogleFonts.poppins(
-                            fontSize: 12,
+                            fontSize: 10,
                             color: Colors.white,
                             fontWeight: FontWeight.bold),
                       ),
@@ -133,8 +133,8 @@ class _MenuState extends State<Menu> {
                 height: 20,
               ),
               Wrap(
-                spacing: 20.0, // Space between items
-                runSpacing: 20.0, // Space between rows
+                spacing: 20.0,
+                runSpacing: 20.0,
                 children: [
                   MenuItem(
                     title: "Check Profile Risk",
@@ -162,7 +162,6 @@ class _MenuState extends State<Menu> {
                     image: "assets/images/Stocks.png",
                     onTap: () {},
                   ),
-                  // Add more MenuItem widgets as needed
                 ],
               ),
             ],

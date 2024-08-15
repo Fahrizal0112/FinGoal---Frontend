@@ -1,4 +1,5 @@
 import 'package:fingoal_frontend/Service/api_service.dart';
+import 'package:fingoal_frontend/menu.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
@@ -6,7 +7,7 @@ import 'package:lottie/lottie.dart';
 class Question extends StatefulWidget {
   const Question({super.key});
   @override
-  State<Question> createState(){
+  State<Question> createState() {
     return _QuestionState();
   }
 }
@@ -16,6 +17,7 @@ class _QuestionState extends State<Question> {
   final _pageController = PageController();
   int _currentPage = 0;
   String _currentQuestionId = '1';
+  final List<Map<String, dynamic>> _answers = [];
 
   @override
   void initState() {
@@ -114,6 +116,7 @@ class _QuestionState extends State<Question> {
                               answers: answers,
                               totalQuestions: questions.length,
                               currentPage: _currentPage,
+                              questionId: questions[index]['id'].toString(),
                             );
                           }
                         },
@@ -134,6 +137,7 @@ class _QuestionState extends State<Question> {
     required List<Map<String, dynamic>> answers,
     required int totalQuestions,
     required int currentPage,
+    required String questionId,
   }) {
     return Padding(
       padding: const EdgeInsets.all(20.0),
@@ -147,30 +151,46 @@ class _QuestionState extends State<Question> {
           const SizedBox(height: 20),
           Text(
             question,
-            style: GoogleFonts.poppins(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+            style: GoogleFonts.poppins(
+                color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
           ),
           Expanded(
             child: ListView(
               children: answers.map((answer) {
                 final answerText = answer['answerText'];
-                final points = answer['point'];
+                final answerId =
+                    answer['id']; 
                 return Padding(
                   padding: const EdgeInsets.symmetric(vertical: 5),
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color.fromARGB(255, 46, 139, 87),
                       padding: const EdgeInsets.symmetric(vertical: 15),
-                      minimumSize: const Size(double.infinity, 50), 
+                      minimumSize: const Size(double.infinity, 50),
                     ),
                     onPressed: () {
                       debugPrint(
-                          'Selected answer: $answerText with points: $points');
+                          'Selected answer: $answerText with id: $answerId');
+
+                      _answers.add({
+                        'questionId': int.parse(questionId),
+                        'answerId': answerId,
+                      });
+
+                      if (currentPage < totalQuestions - 1) {
+                        _pageController.nextPage(
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeInOut,
+                        );
+                      } else {
+                        _submitAnswers();
+                      }
                     },
                     child: Text(
                       answerText,
                       style: GoogleFonts.poppins(
                           color: Colors.white, fontSize: 12),
-                          textAlign: TextAlign.center,
+                      textAlign: TextAlign.center,
                     ),
                   ),
                 );
@@ -180,5 +200,18 @@ class _QuestionState extends State<Question> {
         ],
       ),
     );
+  }
+
+  Future<void> _submitAnswers() async {
+    try {
+      final response = await ApiService().submitAnswers(_answers);
+      debugPrint('Answers submitted successfully: $response');
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => const Menu())); 
+    } catch (e) {
+      debugPrint('Error submitting answers: $e');
+    }
   }
 }

@@ -149,28 +149,29 @@ class ApiService {
     }
   }
 
-Future<Map<String, dynamic>> submitAnswers(List<Map<String, dynamic>> answers) async {
-  const storage = FlutterSecureStorage();
-  final token = await storage.read(key: 'authorization');
+  Future<Map<String, dynamic>> submitAnswers(List<Map<String, dynamic>> answers) async {
+    const storage = FlutterSecureStorage();
+    final token = await storage.read(key: 'authorization');
 
-  if (token == null) {
-    throw Exception('Token not found');
+    if (token == null) {
+      throw Exception('Token not found');
+    }
+
+    final response = await http.post(
+      Uri.parse('$baseUrl/submit'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Cookie': 'authorization=$token',
+      },
+      body: jsonEncode({'answers': answers}),
+    );
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to submit answers');
+    }
   }
-
-  final response = await http.post(
-    Uri.parse('$baseUrl/submit'),
-    headers: <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-    },
-    body: jsonEncode({'answers': answers}),
-  );
-
-  if (response.statusCode == 200) {
-    return jsonDecode(response.body);
-  } else {
-    throw Exception('Failed to submit answers');
-  }
-}
 
   Future<Map<String, dynamic>> createSavings(String token, Map<String, dynamic> savingsData) async {
     final response = await http.post(
