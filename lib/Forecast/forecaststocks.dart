@@ -1,4 +1,4 @@
-import 'package:fingoal_frontend/Forecast/StockDetailScreen.dart';
+import 'package:fingoal_frontend/Forecast/stockdetail.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -11,10 +11,12 @@ class ForecastScreen extends StatefulWidget {
 
 class _ForecastScreenState extends State<ForecastScreen> {
   final List<Map<String, String>> indonesianStocks = [
-    {'name': 'BBCA', 'icon': 'assets/images/BBCA.png'},
-    {'name': 'ASII', 'icon': 'assets/images/ASII.png'},
-    {'name': 'TLKM', 'icon': 'assets/images/TLKM.png'},
-    {'name': 'GOTO', 'icon': 'assets/images/GOTO.png'},
+    {'name': 'BBCA.JK', 'icon': 'assets/images/BBCA.JK.png'},
+    {'name': 'BMRI.JK', 'icon': 'assets/images/BMRI.JK.png'},
+    {'name': 'ASII.JK', 'icon': 'assets/images/ASII.JK.png'},
+    {'name': 'TLKM.JK', 'icon': 'assets/images/TLKM.JK.png'},
+    {'name': 'GOTO.JK', 'icon': 'assets/images/GOTO.JK.png'},
+    {'name': 'ANTM.JK', 'icon': 'assets/images/ANTM.JK.png'},
   ];
 
   void _navigateToStockDetail(String stockName) {
