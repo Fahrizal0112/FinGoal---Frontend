@@ -1,3 +1,4 @@
+import 'package:fingoal_frontend/Forecast/forecaststocks.dart';
 import 'package:fingoal_frontend/Menu/saving.dart';
 import 'package:fingoal_frontend/Service/api_service.dart';
 import 'package:fingoal_frontend/Sign/signin.dart';
@@ -182,7 +183,9 @@ class _MenuState extends State<Menu> {
                   MenuItem(
                     title: "Forecast Stocks",
                     image: "assets/images/Stocks.png",
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => const ForecastScreen()));
+                    },
                   ),
                 ],
               ),

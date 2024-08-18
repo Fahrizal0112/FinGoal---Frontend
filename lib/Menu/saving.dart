@@ -1,5 +1,5 @@
+import 'package:fingoal_frontend/Forecast/forecaststocks.dart';
 import 'package:fingoal_frontend/Service/api_service.dart';
-import 'package:fingoal_frontend/menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -386,7 +386,7 @@ class _SavingState extends State<Saving> {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => const Menu()));
+                                        builder: (context) => const ForecastScreen()));
                               },
                               child: Row(
                                 children: [
