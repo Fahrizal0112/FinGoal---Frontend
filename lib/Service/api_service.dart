@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class ApiService {
-  final String baseUrl = 'http://192.168.18.29:8080/fingoal';
+  final String baseUrl = 'https://fingoal-backend-plhxxy36va-et.a.run.app/fingoal';
 
   Future<Map<String, dynamic>> signup(String lastname, String firstname,
       String username, String email, String password) async {
